@@ -1,0 +1,48 @@
+CALL gds.graph.create('student','StudentInfo','GET_GRADE')
+
+Call gds.pageRank.stream('student') YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n,score
+MATCH (n)-[t:GET_GRADE]-()
+RETURN distinct n.test_preparation_course,score,count(t) AS course_status
+order by score desc
+
+
+------------------------------------------------------------------------------------------------
+
+CALL gds.pageRank.stream({
+nodeProjection: "TestGrade",
+relationshipProjection: "GET_GRADE",
+maxIterations: 20,
+dampingFactor: 0.85
+})
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n,score
+MATCH (n)-[t:GET_GRADE]-()
+RETURN distinct n.math_grade,score, count(t) AS interactions
+order by score desc
+------------------------------------------------------------------------------------------------
+CALL gds.pageRank.stream({
+nodeProjection: "TestGrade",
+relationshipProjection: "GET_GRADE",
+maxIterations: 20,
+dampingFactor: 0.85
+})
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n,score
+MATCH (n)-[t:GET_GRADE]-()
+RETURN distinct n.writing_grade,score, count(t) AS interactions
+order by score desc
+
+
+------------------------------------------------------------------------------------------------
+CALL gds.pageRank.stream({
+nodeProjection: "TestGrade",
+relationshipProjection: "GET_GRADE",
+maxIterations: 20,
+dampingFactor: 0.85
+})
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n,score
+MATCH (n)-[t:GET_GRADE]-()
+RETURN distinct n.reading_grade,score, count(t) AS interactions
+order by score desc
