@@ -1,0 +1,23 @@
+CREATE CONSTRAINT ON (n:StudentInfo) ASSERT n.student_id is UNIQUE; 
+CREATE CONSTRAINT ON (n:Race) ASSERT n.group is UNIQUE;
+CREATE CONSTRAINT ON (n:TestGrade) ASSERT n.grade is UNIQUE; 
+CREATE CONSTRAINT ON (n:ParentalLevelOfEducation) ASSERT n.level is UNIQUE;
+
+
+LOAD CSV WITH HEADERS FROM 'file:///student.csv' AS row
+CREATE (s:StudentInfo {student_id: row.student_id, gender: row.gender, lunch: row.lunch, test_preparation_course: row.test_preparation_course});
+
+LOAD CSV WITH HEADERS FROM 'file:///race.csv' AS row
+Merge (n:Race {group: row.race})
+With row, n Match(s:StudentInfo{student_id:row.student_id})
+Merge (s)-[:CLASSIFIED_AS] ->(n);
+
+LOAD CSV WITH HEADERS FROM 'file:///parentaledu.csv' AS row
+Merge (n:ParentalLevelOfEducation {level: row.parental_level_of_education})
+With row, n Match(s:StudentInfo{student_id:row.student_id})
+Merge (s)-[:HAS_PARENTS_BACKGROUND] ->(n);
+
+LOAD CSV WITH HEADERS FROM 'file:///TestGrade.csv' AS row
+Merge (n:TestGrade {math_grade: row.math_grade, math_score: row.math_score, writing_grade: row.writing_grade, writing_score: row.writing_score, reading_grade: row.reading_grade, reading_score: row.reading_score})
+With row, n Match(s:StudentInfo{student_id:row.student_id})
+Merge (s)-[:GET_GRADE]->(n)
