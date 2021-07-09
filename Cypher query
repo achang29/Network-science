@@ -1,0 +1,59 @@
+Overall look at the student who has at least one good grade, which is grade A or grade B, in three subjects
+
+
+Code:
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Match (p:ParentalLevelOfEducation)<-[:HAS_PARENTS_BACKGROUND]-(s:StudentInfo)-[:CLASSIFIED_AS]->(g:Race)
+Where (t.reading_grade = 'A' or t.reading_grade = 'B'or t.math_grade = 'A' or t.math_grade = 'B' or t.writing_grade = 'A' or t.writing = 'B') 
+Return t.reading_grade as good_reading_grade,t.math_grade as good_math_grade,t.writing_grade as good_writing_grade, s.lunch as lunch_status, s.test_preparation_course as test_preparation_course , s.gender as gender, g.group as race, p.level as parental_level_of_edu
+
+
+a.	Count how many female students who have good performance,
+
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Where (t.reading_grade = 'A' or t.reading_grade = 'B'or t.math_grade = 'A' or t.math_grade = 'B' or t.writing_grade = 'A' or t.writing = 'B') AND (s.gender = 'female')
+Return count(s.gender) as count_female_goodgrade
+
+b.	Count how many students whose lunch status is standard,
+
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Where (t.reading_grade = 'A' or t.reading_grade = 'B'or t.math_grade = 'A' or t.math_grade = 'B' or t.writing_grade = 'A' or t.writing = 'B') AND (s.lunch = 'standard')
+Return count(s.lunch) as count_lunch_standard_goodgrade
+
+c.	Count how many students’ parents are higher educated,
+
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Match (p:ParentalLevelOfEducation)<-[:HAS_PARENTS_BACKGROUND]-(s:StudentInfo)
+Where (t.reading_grade = 'A' or t.reading_grade = 'B'or t.math_grade = 'A' or t.math_grade = 'B' or t.writing_grade = 'A' or t.writing = 'B') AND (p.level = "master's degree" or p.level = "bachelor's degree")
+Return count(p.level) as count_higheredu_goodgrade
+
+Another insight for looking at how many student have low performance, which is grade D or F,  on each test grade. By looking at each subject, we can know if the school have to work more on which subject in order to make students get improvement.
+Code
+
+a.	Low performance on math
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Where (t.math_grade = 'D'or t.math_grade = 'F') 
+Return count(s.student_id) as bad_math_grade
+
+
+b.	Low performance on writing
+
+Code
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Where (t.writing_grade = 'D'or t.writing_grade = 'F') 
+Return count(s.student_id) as bad_writing_grade
+
+
+c.	Low performance on reading
+
+Code
+Match (t:TestGrade)<-[:GET_GRADE]-(s:StudentInfo)
+Where (t.reading_grade = 'D'or t.reading_grade = 'F') 
+Return count(s.student_id) as bad_reading_grade
+
+
+
+
+
+
+
